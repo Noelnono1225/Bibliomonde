@@ -1,2 +1,0 @@
-# Bibliomonde
-Application bibliothèque Bibliomonde
