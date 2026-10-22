@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102a43">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BiblioMonde">
+<title>BiblioMonde — Bibliothèque éducative</title>
+<style>
+:root{--navy:#102a43;--blue:#1e6091;--gold:#f0b429;--paper:#f4f7fb;--ink:#172b3a;--muted:#617486;--line:#dbe4ec}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--paper);color:var(--ink)}
+header{background:linear-gradient(120deg,#102a43,#1d557a);color:white;padding:22px 16px 18px}
+.head{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:14px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:900;font-size:22px}.brand h1{margin:0;font-size:22px}.brand p{margin:3px 0 0;color:#d8e6f2;font-size:13px}
+button,input,select,textarea{font:inherit}button{border:0;border-radius:10px;padding:10px 14px;background:var(--blue);color:white;font-weight:650;cursor:pointer}button.secondary{background:#e7eef5;color:var(--navy)}button.gold{background:var(--gold);color:#152b3c}button.danger{background:#a83232}.wrap{max-width:1100px;margin:20px auto;padding:0 14px}.notice{background:#fff8df;border:1px solid #f1d47c;padding:12px 14px;border-radius:12px;font-size:14px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.stat,.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:16px}.stat strong{display:block;font-size:24px;color:var(--navy)}.stat span{font-size:13px;color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}.toolbar input{flex:1;min-width:190px}.toolbar input,.toolbar select,.panel input,.panel select,.panel textarea{border:1px solid #cbd8e3;border-radius:10px;padding:10px;background:white;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}.book{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;display:flex;flex-direction:column;gap:8px;min-height:215px}.cover{height:70px;border-radius:10px;background:linear-gradient(135deg,#dcecf8,#f6e7b6);display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:27px;font-weight:800}.book h3{margin:0;font-size:17px}.book p{margin:0;color:var(--muted);font-size:13px}.tag{display:inline-block;background:#edf4fa;color:#1b5279;border-radius:20px;padding:4px 8px;font-size:12px;margin-right:4px}.book .actions{display:flex;gap:7px;margin-top:auto}.book .actions button{flex:1;padding:9px 8px;font-size:13px}
+section h2{font-size:20px;margin:0 0 12px}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#071827b8;display:grid;place-items:center;padding:16px;z-index:5}.modalbox{background:white;border-radius:16px;max-width:600px;width:100%;max-height:90vh;overflow:auto;padding:20px}.modalbox h2{margin-top:0}.modalbox label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}.modalbox input,.modalbox select,.modalbox textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px}.rowbtn{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.reader{white-space:pre-wrap;line-height:1.7}
+footer{text-align:center;color:var(--muted);padding:30px 15px;font-size:12px}
+@media(max-width:600px){.head{align-items:flex-start}.brand h1{font-size:19px}.stats{gap:7px}.stat{padding:11px}.stat strong{font-size:20px}.stat span{font-size:11px}}
+
+.hbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.hbtns button{padding:9px 12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}.row select,.row button{padding:8px 10px}
+.stars button{background:none;color:#c9d3dc;padding:2px 4px;font-size:24px}.stars button.on{color:var(--gold)}
+.notes{width:100%;margin-top:6px}.mini{font-size:12px;color:var(--muted)}.tag.st{background:#fff1c9;color:#6b4a00}
+.bar{height:6px;border-radius:5px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--gold)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+body.dark{--paper:#0b1622;--ink:#e6eef5;--muted:#9db1c3;--line:#273a4c}
+body.dark .stat,body.dark .panel,body.dark .book,body.dark .modalbox{background:#13232f}
+body.dark .toolbar input,body.dark .toolbar select,body.dark .panel input,body.dark .panel select,body.dark .panel textarea,body.dark .modalbox input,body.dark .modalbox select,body.dark .modalbox textarea,body.dark .row select{background:#0f1c28;color:var(--ink);border-color:#314658}
+body.dark button.secondary{background:#243949;color:#e6eef5}body.dark .tag{background:#1c3347;color:#bcd8ee}body.dark .tag.st{background:#4a3a0e;color:#ffe08a}
+body.dark .cover{background:linear-gradient(135deg,#1c3347,#4a3a0e);color:#fff}body.dark .notice{background:#3a2f10;border-color:#6b5517;color:#ffe9a8}body.dark .stat strong{color:#fff}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.def{background:#edf4fa;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:15px;line-height:1.5}body.dark .def{background:#1c3347}.def button{padding:4px 9px}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="brand"><div class="logo">BM</div><div><h1>BiblioMonde</h1><p>Lire, apprendre et grandir</p></div></div><div class="hbtns"><button class="secondary" id="dictBtn">📖 Dico</button><button class="secondary" id="installBtn">📲 Installer</button><button class="secondary" id="themeBtn" aria-label="Mode sombre">🌙</button><button class="gold" id="securityBtn">🔐 Compte</button></div></div></header>
+<main class="wrap">
+<div class="notice"><b>À savoir :</b> cette application s'installe sur ton téléphone et fonctionne aussi hors connexion. Elle contient un petit catalogue de démonstration et permet d'ajouter tes livres. Elle ne contient pas automatiquement tous les livres du monde ni les textes complets protégés par le droit d'auteur.</div>
+<div class="stats"><div class="stat"><strong id="bookCount">0</strong><span>Livres au catalogue</span></div><div class="stat"><strong id="doneCount">0</strong><span>Livres terminés</span></div><div class="stat"><strong id="savedCount">0</strong><span>Livres favoris</span></div></div>
+<section>
+<h2>Explorer la bibliothèque</h2>
+<div class="toolbar"><input id="search" placeholder="Rechercher un titre, auteur ou matière…"><select id="level"><option value="">Tous les niveaux</option><option>Pré-primaire</option><option>CP</option><option>CE1</option><option>CE2</option><option>CM1</option><option>CM2</option><option>6e</option><option>5e</option><option>4e</option><option>3e</option><option>2nde</option><option>1ère</option><option>Terminale</option></select><select id="subject"><option value="">Toutes les matières</option><option>Français</option><option>Mathématiques</option><option>Sciences</option><option>Histoire-Géographie</option><option>Langues</option></select><select id="status"><option value="">Tous les statuts</option><option>À lire</option><option>En cours</option><option>Terminé</option></select><select id="sort"><option value="recent">Plus récents</option><option value="az">Titre A→Z</option><option value="level">Par niveau</option></select><button id="addBtn">＋ Ajouter un livre</button></div>
+<div id="books" class="grid"></div>
+</section>
+<section class="panel" style="margin-top:20px"><h2>Mes outils</h2><div class="toolbar"><button class="secondary" id="favFilter">☆ Voir mes favoris</button><button class="secondary" id="exportBtn">Sauvegarder (export)</button><button class="secondary" id="importBtn">Importer un catalogue</button><button class="secondary" id="randBtn">🎲 Livre au hasard</button><button class="secondary" id="resetBtn">Restaurer la démo</button><input type="file" id="fileInput" accept=".json,application/json" class="hidden"></div><p style="font-size:13px;color:var(--muted)">Les livres ajoutés et favoris sont enregistrés dans le stockage local de ce navigateur. Statuts, notes et notations sont aussi sauvegardés. Pense à exporter une sauvegarde de temps en temps.</p></section>
+</main><footer>BiblioMonde · Bibliothèque éducative personnelle</footer>
+<div id="modal" class="modal hidden"><div class="modalbox" id="modalbox"></div></div>
+<script>
+const levels=["Pré-primaire","CP","CE1","CE2","CM1","CM2","6e","5e","4e","3e","2nde","1ère","Terminale"];
+const initial=[
+{id:1,title:"Les lettres et les sons",author:"Équipe pédagogique",level:"Pré-primaire",subject:"Français",description:"Premiers repères pour reconnaître les lettres, les sons et les mots.",content:"Bienvenue dans les lettres et les sons !\n\nActivité : observe les lettres de ton prénom.\n\nExercice : demande à un adulte de lire trois mots et répète-les doucement.\n\nCe contenu est une fiche d'activité de démonstration, pas un manuel complet."},
+{id:2,title:"Premiers calculs",author:"Équipe pédagogique",level:"CP",subject:"Mathématiques",description:"Découvrir les nombres, compter et effectuer de petites additions.",content:"Découvrons les nombres.\n\n1 + 1 = 2\n2 + 3 = 5\n\nActivité : compte cinq objets autour de toi puis ajoute-en deux. Combien en as-tu ?\n\nFiche d'exemple BiblioMonde."},
+{id:3,title:"Lire et comprendre un texte",author:"Équipe pédagogique",level:"CE2",subject:"Français",description:"S'entraîner à lire un court texte et répondre à des questions.",content:"Le jardin de Mina\n\nMina plante trois graines dans un petit jardin. Chaque matin, elle arrose la terre et observe les pousses. Après plusieurs jours, de petites feuilles apparaissent.\n\nQuestions : 1. Que plante Mina ? 2. Que fait-elle chaque matin ? 3. Que voit-elle après plusieurs jours ?\n\nTexte original de démonstration."},
+{id:4,title:"Les êtres vivants et leur milieu",author:"Équipe pédagogique",level:"CM2",subject:"Sciences",description:"Comprendre les besoins des êtres vivants et leur environnement.",content:"Les êtres vivants ont besoin d'un milieu adapté. Les plantes utilisent notamment la lumière, l'eau et les sels minéraux. Les animaux ont besoin d'eau, de nourriture et d'un abri.\n\nActivité : choisis une plante de ton quartier et note ce qui l'aide à grandir.\n\nFiche de démonstration."},
+{id:5,title:"Proportionnalité : premières méthodes",author:"Équipe pédagogique",level:"5e",subject:"Mathématiques",description:"Réviser les tableaux de proportionnalité et les situations simples.",content:"Exemple : 2 cahiers coûtent 1 000 FCFA. Si le prix est proportionnel, 4 cahiers coûtent 2 000 FCFA.\n\nMéthode : multiplier ou diviser les deux grandeurs par le même nombre.\n\nExercices : calcule le prix de 6 cahiers, puis de 1 cahier.\n\nFiche de démonstration."},
+{id:6,title:"La cellule : unité du vivant",author:"Équipe pédagogique",level:"3e",subject:"Sciences",description:"Introduction à la cellule et aux grandes fonctions du vivant.",content:"La cellule est une unité fondamentale des êtres vivants. Certaines formes de vie sont constituées d'une seule cellule, d'autres de nombreuses cellules spécialisées.\n\nÀ retenir : membrane, cytoplasme et matériel génétique sont des éléments importants d'une cellule.\n\nFiche de révision de démonstration."},
+{id:7,title:"Fonctions et variations",author:"Équipe pédagogique",level:"Terminale",subject:"Mathématiques",description:"Exemple de rappel sur les fonctions et l'étude de variations.",content:"Une fonction associe à chaque valeur autorisée x une valeur f(x). Étudier ses variations consiste à déterminer les intervalles où elle augmente ou diminue.\n\nExercice de démonstration : étudie les variations de f(x)=x² sur [-2;2] à partir de son graphique ou de sa dérivée selon le cours suivi.\n\nCe texte est un aperçu, pas un cours complet."},
+{id:8,title:"Histoire : repères et chronologie",author:"Équipe pédagogique",level:"4e",subject:"Histoire-Géographie",description:"Organiser des événements historiques dans une chronologie.",content:"Une chronologie permet de situer des événements dans le temps. Pour la construire, relève les dates, place-les dans l'ordre et indique le contexte.\n\nActivité : choisis trois événements étudiés en classe et classe-les du plus ancien au plus récent.\n\nFiche de démonstration."}
+];
+const subjects=["Français","Mathématiques","Sciences","Histoire-Géographie","Langues","Informatique","Arts","Philosophie","Économie","Culture générale"];
+const STS=["À lire","En cours","Terminé"];
+const extra=[
+{id:9,title:"Initiation à l'algorithmique",author:"Équipe pédagogique",level:"6e",subject:"Informatique",description:"Comprendre ce qu'est un algorithme avec des exemples de la vie courante.",content:"Un algorithme est une suite d'instructions pour résoudre un problème.\n\nExemple : préparer du thé. 1. Chauffer l'eau. 2. Verser l'eau sur le thé. 3. Attendre trois minutes.\n\nExercice : écris l'algorithme pour te brosser les dents.\n\nFiche de démonstration."},
+{id:10,title:"Les couleurs primaires",author:"Équipe pédagogique",level:"CE1",subject:"Arts",description:"Découvrir les couleurs primaires et les mélanges.",content:"Les trois couleurs primaires sont le rouge, le jaune et le bleu.\n\nRouge + jaune = orange. Jaune + bleu = vert. Bleu + rouge = violet.\n\nActivité : mélange deux couleurs et dessine le résultat.\n\nFiche de démonstration."},
+{id:11,title:"Qu'est-ce que penser ?",author:"Équipe pédagogique",level:"Terminale",subject:"Philosophie",description:"Premières questions pour apprendre à problématiser.",content:"Philosopher, c'est questionner ce qui semble évident.\n\nQuestion : peut-on être libre sans règles ? Note un argument pour, un argument contre, puis ta conclusion.\n\nAperçu de démonstration."},
+{id:12,title:"Besoins et ressources",author:"Équipe pédagogique",level:"2nde",subject:"Économie",description:"Notions de base : besoins, rareté et choix.",content:"Les besoins humains sont illimités, mais les ressources sont limitées : c'est la rareté. Il faut donc faire des choix.\n\nExercice : avec 5 000 FCFA, liste ce que tu achèterais et ce à quoi tu renonces.\n\nFiche de démonstration."},
+{id:13,title:"Say hello! Se présenter en anglais",author:"Équipe pédagogique",level:"6e",subject:"Langues",description:"Phrases simples pour se présenter.",content:"Hello! My name is ... I am ... years old. I live in ...\n\nExercice : présente-toi à voix haute en trois phrases.\n\nFiche de démonstration."}
+];
+const $=id=>document.getElementById(id);
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch{return d}};
+let books=ld("bm_books",null)||initial.concat(extra),favorites=ld("bm_favs",[]),meta=ld("bm_meta",{}),onlyFav=false,fs=+(localStorage.getItem("bm_fs")||17),deferred=null;
+const M=id=>meta[id]||(meta[id]={status:"À lire",rating:0,notes:""});
+function save(){localStorage.setItem("bm_books",JSON.stringify(books));localStorage.setItem("bm_favs",JSON.stringify(favorites));localStorage.setItem("bm_meta",JSON.stringify(meta))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const opts=(arr,sel)=>arr.map(x=>`<option${x===sel?" selected":""}>${esc(x)}</option>`).join("");
+$("subject").innerHTML='<option value="">Toutes les matières</option>'+opts(subjects);
+function render(){
+const q=$("search").value.toLowerCase(),l=$("level").value,s=$("subject").value,t=$("status").value,so=$("sort").value;
+let list=books.filter(b=>(!q||(b.title+" "+b.author+" "+b.subject+" "+b.description).toLowerCase().includes(q))&&(!l||b.level===l)&&(!s||b.subject===s)&&(!t||(meta[b.id]?.status||"À lire")===t)&&(!onlyFav||favorites.includes(b.id)));
+if(so==="az")list.sort((a,b)=>a.title.localeCompare(b.title,"fr"));if(so==="level")list.sort((a,b)=>levels.indexOf(a.level)-levels.indexOf(b.level));
+$("bookCount").textContent=books.length;$("savedCount").textContent=favorites.length;$("doneCount").textContent=books.filter(b=>meta[b.id]?.status==="Terminé").length;
+$("books").innerHTML=list.map(b=>{const m=meta[b.id]||{},p=m.status==="Terminé"?100:m.status==="En cours"?50:0;return `<article class="book"><div class="cover">📘</div><div><span class="tag">${esc(b.level)}</span><span class="tag">${esc(b.subject)}</span>${m.status&&m.status!=="À lire"?`<span class="tag st">${esc(m.status)}</span>`:""}</div><h3>${esc(b.title)}</h3><p>Par ${esc(b.author)}</p><p>${esc(b.description)}</p>${m.rating?`<p>${"★".repeat(m.rating)}${"☆".repeat(5-m.rating)}</p>`:""}<div class="bar"><i style="width:${p}%"></i></div><div class="actions"><button data-read="${b.id}">Lire le livre</button><button class="secondary" data-fav="${b.id}" aria-label="Favori">${favorites.includes(b.id)?"★":"☆"}</button></div></article>`}).join("")||"<p>Aucun livre trouvé. Change de filtre ou ajoute un livre avec « ＋ Ajouter un livre ».</p>";
+document.querySelectorAll("[data-read]").forEach(x=>x.onclick=()=>readBook(+x.dataset.read));
+document.querySelectorAll("[data-fav]").forEach(x=>x.onclick=()=>{const id=+x.dataset.fav;favorites=favorites.includes(id)?favorites.filter(n=>n!==id):[...favorites,id];save();render()})}
+const DICT_RAW=`bonjour=hello|good morning
+salut=hi
+merci=thank you|thanks
+oui=yes
+non=no
+s'il vous plaît=please
+au revoir=goodbye
+bonsoir=good evening
+bonne nuit=good night
+excusez-moi=excuse me
+pardon=sorry
+comment=how
+pourquoi=why
+parce que=because
+quand=when
+où=where
+qui=who
+quoi=what
+quel=which|what
+je=I
+tu=you
+il=he
+elle=she
+nous=we
+vous=you
+ils=they
+mon=my
+ton=your
+son=his|her
+notre=our
+et=and
+ou=or
+mais=but
+avec=with
+sans=without
+pour=for
+dans=in
+sur=on
+sous=under
+devant=in front of
+derrière=behind
+entre=between
+très=very
+beaucoup=a lot|many|much
+peu=little|few
+plus=more
+moins=less
+aussi=also|too
+toujours=always
+jamais=never
+souvent=often
+parfois=sometimes
+maintenant=now
+aujourd'hui=today
+demain=tomorrow
+hier=yesterday
+matin=morning
+soir=evening
+nuit=night
+jour=day
+semaine=week
+mois=month
+année=year
+heure=hour
+temps=time|weather
+famille=family
+mère=mother
+père=father
+frère=brother
+sœur=sister
+enfant=child
+fils=son
+fille=daughter|girl
+grand-mère=grandmother
+grand-père=grandfather
+ami=friend
+amie=friend
+garçon=boy
+homme=man
+femme=woman|wife
+personne=person
+maison=house|home
+école=school
+classe=class
+professeur=teacher
+élève=pupil|student
+livre=book
+cahier=notebook
+stylo=pen
+crayon=pencil
+table=table
+chaise=chair
+porte=door
+fenêtre=window
+cartable=schoolbag
+tableau=board|painting
+leçon=lesson
+devoir=homework|duty|to have to|must
+exercice=exercise
+question=question
+réponse=answer
+examen=exam
+note=grade|note
+bibliothèque=library
+mot=word
+phrase=sentence
+texte=text
+lettre=letter
+histoire=history|story
+géographie=geography
+mathématiques=mathematics|maths
+sciences=science
+langue=language|tongue
+français=French
+anglais=English
+musique=music
+sport=sport
+chat=cat
+chien=dog
+oiseau=bird
+poisson=fish
+cheval=horse
+vache=cow
+animal=animal
+plante=plant
+arbre=tree
+fleur=flower
+graine=seed
+feuille=leaf|sheet
+jardin=garden
+forêt=forest
+rivière=river
+mer=sea
+montagne=mountain
+terre=earth|soil|land
+eau=water
+feu=fire
+air=air
+soleil=sun
+lune=moon
+étoile=star
+ciel=sky
+pluie=rain
+vent=wind
+neige=snow
+nuage=cloud
+pain=bread
+lait=milk
+fromage=cheese
+fruit=fruit
+légume=vegetable
+pomme=apple
+banane=banana
+riz=rice
+viande=meat
+œuf=egg
+sucre=sugar
+sel=salt
+thé=tea
+café=coffee
+repas=meal
+petit déjeuner=breakfast
+déjeuner=lunch
+dîner=dinner
+tête=head
+main=hand
+pied=foot
+bras=arm
+jambe=leg
+œil=eye
+yeux=eyes
+oreille=ear
+nez=nose
+bouche=mouth
+dent=tooth
+cœur=heart
+corps=body
+rouge=red
+bleu=blue
+vert=green
+jaune=yellow
+orange=orange
+noir=black
+blanc=white
+violet=purple
+rose=pink
+gris=grey
+marron=brown
+un=one
+deux=two
+trois=three
+quatre=four
+cinq=five
+six=six
+sept=seven
+huit=eight
+neuf=nine
+dix=ten
+vingt=twenty
+cent=hundred
+mille=thousand
+premier=first
+dernier=last
+grand=big|tall|large
+petit=small|little
+long=long
+court=short
+nouveau=new
+vieux=old
+jeune=young
+bon=good
+mauvais=bad
+beau=beautiful|handsome
+joli=pretty
+facile=easy
+difficile=difficult|hard
+important=important
+heureux=happy
+triste=sad
+content=happy|glad
+fatigué=tired
+fort=strong|loud
+faible=weak
+chaud=hot|warm
+froid=cold
+rapide=fast
+lent=slow
+propre=clean|own
+sale=dirty
+plein=full
+vide=empty
+ouvert=open
+fermé=closed
+vrai=true
+faux=false|wrong
+vivant=living|alive
+être=to be
+avoir=to have
+faire=to do|to make
+aller=to go
+venir=to come
+voir=to see
+savoir=to know
+connaître=to know
+pouvoir=can|to be able to
+vouloir=to want
+dire=to say|to tell
+parler=to speak|to talk
+manger=to eat
+boire=to drink
+dormir=to sleep
+lire=to read
+écrire=to write
+écouter=to listen
+regarder=to look|to watch
+entendre=to hear
+penser=to think
+comprendre=to understand
+apprendre=to learn
+enseigner=to teach
+étudier=to study
+travailler=to work
+jouer=to play
+chanter=to sing
+danser=to dance
+courir=to run
+marcher=to walk
+sauter=to jump
+nager=to swim
+prendre=to take
+donner=to give
+mettre=to put
+trouver=to find
+chercher=to look for
+aimer=to like|to love
+détester=to hate
+acheter=to buy
+vendre=to sell
+payer=to pay
+ouvrir=to open
+fermer=to close
+commencer=to begin|to start
+finir=to finish
+attendre=to wait
+arroser=to water
+planter=to plant
+grandir=to grow
+calculer=to calculate
+compter=to count
+additionner=to add
+soustraire=to subtract
+multiplier=to multiply
+diviser=to divide
+résoudre=to solve
+expliquer=to explain
+demander=to ask
+répondre=to answer
+répéter=to repeat
+choisir=to choose
+oublier=to forget
+retenir=to remember|to retain
+mélanger=to mix
+aider=to help
+vivre=to live
+habiter=to live
+naître=to be born
+mourir=to die
+nombre=number
+addition=addition
+soustraction=subtraction
+multiplication=multiplication
+division=division
+fraction=fraction
+pourcentage=percentage
+équation=equation
+fonction=function
+variation=variation
+dérivée=derivative
+intervalle=interval
+graphique=graph|chart
+triangle=triangle
+carré=square
+cercle=circle
+rectangle=rectangle
+angle=angle
+ligne=line
+point=point
+proportionnalité=proportionality
+prix=price
+algorithme=algorithm
+instruction=instruction
+problème=problem
+cellule=cell
+membrane=membrane
+cytoplasme=cytoplasm
+énergie=energy
+lumière=light
+expérience=experiment|experience
+environnement=environment
+milieu=environment|middle
+besoin=need
+ressource=resource
+rareté=scarcity
+choix=choice
+argent=money|silver
+liberté=freedom
+libre=free
+règle=rule|ruler
+argument=argument
+conclusion=conclusion
+chronologie=chronology|timeline
+date=date
+événement=event
+siècle=century
+guerre=war
+paix=peace
+roi=king
+reine=queen
+pays=country
+ville=city|town
+village=village
+carte=map|card
+monde=world
+rue=street
+route=road
+voiture=car
+train=train
+avion=plane
+vélo=bicycle|bike
+marché=market
+magasin=shop|store
+hôpital=hospital
+médecin=doctor
+travail=work|job
+vie=life
+mort=death
+santé=health
+idée=idea
+rêve=dream
+peur=fear
+amour=love
+joie=joy
+force=strength
+aide=help
+cadeau=gift
+jeu=game
+film=film|movie
+chanson=song
+image=picture|image
+couleur=colour|color
+mélange=mixture|mix
+activité=activity
+révision=revision
+fiche=worksheet|card
+démonstration=demonstration
+méthode=method
+exemple=example
+définition=definition
+sens=meaning|sense|direction
+vocabulaire=vocabulary
+dictionnaire=dictionary
+grammaire=grammar
+verbe=verb
+nom=name|noun
+adjectif=adjective
+écriture=writing
+lecture=reading
+pousse=shoot|sprout
+abri=shelter
+nourriture=food
+quartier=neighbourhood
+ensemble=together|set
+chaque=each|every
+autre=other
+même=same|even
+tout=all|everything
+rien=nothing
+quelque chose=something
+quelqu'un=someone
+ici=here
+là=there
+loin=far
+près=near|close
+avant=before
+après=after
+pendant=during
+puis=then
+encore=again|still
+déjà=already
+seulement=only
+ensuite=then|next
+si=if|so
+que=that|than
+ce=this|that
+cette=this|that
+ces=these|those
+le=the
+la=the
+les=the
+une=a|an
+des=some
+du=some|of the
+de=of|from
+à=to|at
+en=in|by
+par=by|through
+chez=at the home of
+vers=towards
+contre=against
+selon=according to
+comme=like|as`;
+const FR={},EN={};
+const nrm=s=>String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’]/g,"'").trim();
+function addEntry(fr,en){const kf=nrm(fr),f=FR[kf]||(FR[kf]={w:fr,t:[]});if(!f.t.includes(en))f.t.push(en);const ke=nrm(en.replace(/^to /,"")),e=EN[ke]||(EN[ke]={w:en,t:[]});if(!e.t.includes(fr))e.t.push(fr)}
+const parseDico=t=>t.split("\n").forEach(l=>{const[a,b]=l.split("=");if(b)b.split("|").forEach(x=>addEntry(a.trim(),x.trim()))});parseDico(DICT_RAW);
+async function loadDico(){try{let t;try{const r=await fetch("dico.txt");if(!r.ok)throw Error();const c=await caches.open("bm-dico");await c.put("dico.txt",r.clone());t=await r.text()}catch{const m=await(await caches.open("bm-dico")).match("dico.txt");if(!m)return;t=await m.text()}parseDico(t)}catch{}}
+let userDict=ld("bm_dict",[]);userDict.forEach(d=>addEntry(d.fr,d.en));
+if(location.protocol.startsWith("http"))loadDico();
+const saveDict=()=>localStorage.setItem("bm_dict",JSON.stringify(userDict));
+function find(q,dir){const D=dir==="fr"?FR:EN,k=nrm(q).replace(dir==="en"?/^to /:/^$/,""),c=[k,k.replace(/(es|s|x)$/,""),k.replace(/(ing|ed)$/,""),k.replace(/ing$/,"e")];let hit=null;for(const x of c)if(x&&D[x]){hit=D[x];break}return{hit,sim:k?Object.keys(D).filter(x=>x!==k&&x.startsWith(k)).slice(0,6).map(x=>D[x]):[]}}
+function lookupInto(el,q,dir){const r=find(q,dir),to=dir==="fr"?"en":"fr";let h="";
+if(r.hit){const say=dir==="fr"?r.hit.t[0]:r.hit.w;h+=`<p style="margin:0"><b>${esc(r.hit.w)}</b> → ${esc(r.hit.t.join(", "))} <button class="secondary" data-say="${esc(say)}" aria-label="Écouter en anglais">🔊</button></p>`}
+else h+=`<p style="margin:0">« ${esc(q)} » n'est pas dans le dictionnaire hors-ligne.</p><button class="gold" data-online="1" style="margin-top:8px">🌐 Chercher en ligne</button>`;
+if(r.sim.length)h+=`<p class="mini" style="margin:8px 0 2px">Mots proches :</p>`+r.sim.map(x=>`<button class="secondary" data-w="${esc(x.w)}" style="font-size:13px;margin:3px 3px 0 0">${esc(x.w)}</button>`).join("");
+el.innerHTML=h;
+el.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(b.dataset.say.replace(/^to /,""));u.lang="en-US";speechSynthesis.speak(u)});
+el.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const i=$("dQ");if(i&&el.id==="dOut")i.value=b.dataset.w;lookupInto(el,b.dataset.w,dir)});
+const ob=el.querySelector("[data-online]");
+if(ob)ob.onclick=async()=>{ob.disabled=true;ob.textContent="Recherche…";try{const j=await(await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(q)+"&langpair="+dir+"|"+to)).json(),t=(j.responseData?.translatedText||"").trim();if(!t||nrm(t)===nrm(q)||j.responseStatus!=200)throw Error();const[fr,en]=dir==="fr"?[q,t]:[t,q];userDict.push({fr,en});addEntry(fr,en);saveDict();lookupInto(el,q,dir);el.insertAdjacentHTML("beforeend",`<p class="mini">Traduction automatique en ligne, enregistrée pour un usage hors-ligne.</p>`)}catch{el.insertAdjacentHTML("beforeend",`<p class="mini">Traduction introuvable (connexion indisponible ou mot inconnu).</p>`);ob.disabled=false;ob.textContent="🌐 Chercher en ligne"}}}
+function dico(pre){show(`<h2>📖 Dictionnaire</h2><div class="row"><select id="dDir"><option value="fr">Français → Anglais</option><option value="en">Anglais → Français</option></select></div><input id="dQ" placeholder="Tape un mot…" autocomplete="off" autocapitalize="off"><div class="def" id="dOut"><span class="mini">${Object.keys(FR).length} mots français disponibles hors-ligne. Les mots absents peuvent être cherchés en ligne.</span></div><div class="rowbtn"><button class="secondary" id="dAdd">＋ Ajouter un mot</button><button class="secondary" id="close">Fermer</button></div>`);
+const go=()=>{const q=$("dQ").value.trim();if(q)lookupInto($("dOut"),q,$("dDir").value)};
+$("dQ").oninput=go;$("dDir").onchange=go;$("close").onclick=close;
+$("dAdd").onclick=()=>{const fr=(prompt("Mot ou expression en français :")||"").trim(),en=fr&&(prompt("Traduction en anglais :")||"").trim();if(fr&&en){userDict.push({fr,en});addEntry(fr,en);saveDict();$("dQ").value=fr;$("dDir").value="fr";go()}};
+if(pre){$("dQ").value=pre;go()}else $("dQ").focus()}
+const modal=$("modal"),box=$("modalbox");
+function show(c){box.innerHTML=c;modal.classList.remove("hidden")}
+function close(){speechSynthesis?.cancel();modal.classList.add("hidden")}
+modal.onclick=e=>{if(e.target===modal)close()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+function readBook(id){const b=books.find(x=>x.id===id),m=M(id),txt=(b.content||"Aucun contenu n'a été ajouté pour ce livre.").replace(/\\n/g,"\n");
+show(`<h2>${esc(b.title)}</h2><p><span class="tag">${esc(b.level)}</span><span class="tag">${esc(b.subject)}</span></p>
+<div class="row"><button class="secondary" id="fm">A−</button><button class="secondary" id="fp">A+</button><button class="secondary" id="tts">🔊 Écouter</button><button class="secondary" id="trSel">📖 Traduire</button><select id="stSel" aria-label="Statut">${opts(STS,m.status)}</select></div>
+<p class="reader" id="txt" style="font-size:${fs}px">${esc(txt)}</p><div class="def hidden" id="defBox"></div><p class="mini">Astuce : touche deux fois un mot du texte, ou sélectionne-le puis appuie sur « Traduire ».</p>
+<div class="stars" id="stars" aria-label="Ma note">${[1,2,3,4,5].map(n=>`<button data-n="${n}" class="${n<=m.rating?"on":""}">★</button>`).join("")}</div>
+<label>Mes notes personnelles</label><textarea class="notes" id="notes" rows="3" placeholder="Ce que j'ai retenu…">${esc(m.notes)}</textarea>
+<div class="rowbtn"><button class="danger" id="del">Supprimer</button><button class="secondary" id="edit">Modifier</button><button class="secondary" id="close">Fermer</button></div>`);
+const sz=d=>{fs=Math.min(30,Math.max(13,fs+d));localStorage.setItem("bm_fs",fs);$("txt").style.fontSize=fs+"px"};
+$("fm").onclick=()=>sz(-2);$("fp").onclick=()=>sz(2);
+const tr=()=>{const w=getSelection().toString().replace(/[.,;:!?«»()"]/g,"").trim();if(!w||w.split(/\s+/).length>4)return alert("Sélectionne un mot (ou une courte expression) dans le texte.");const d=FR[nrm(w)]?"fr":EN[nrm(w)]?"en":b.subject==="Langues"?"en":"fr",o=$("defBox");o.classList.remove("hidden");lookupInto(o,w,d)};
+$("trSel").onclick=tr;$("txt").ondblclick=tr;
+$("tts").onclick=()=>{if(!window.speechSynthesis)return alert("La lecture à voix haute n'est pas disponible sur cet appareil.");if(speechSynthesis.speaking){speechSynthesis.cancel();return}const u=new SpeechSynthesisUtterance(txt);u.lang="fr-FR";speechSynthesis.speak(u)};
+$("stSel").onchange=e=>{m.status=e.target.value;save();render()};
+$("stars").onclick=e=>{const n=+e.target.dataset.n;if(!n)return;m.rating=m.rating===n?0:n;save();render();[...$("stars").children].forEach((x,i)=>x.classList.toggle("on",i<m.rating))};
+$("notes").oninput=e=>{m.notes=e.target.value;save()};
+$("close").onclick=close;$("edit").onclick=()=>addBook(b);
+$("del").onclick=()=>{if(confirm("Supprimer « "+b.title+" » ? Cette action est définitive.")){books=books.filter(x=>x.id!==id);favorites=favorites.filter(x=>x!==id);delete meta[id];save();close();render()}}}
+function addBook(b){const e=!!b;b=b||{};show(`<h2>${e?"Modifier le livre":"Ajouter un livre"}</h2><form id="bookForm"><label>Titre *</label><input name="title" required value="${esc(b.title)}"><label>Auteur</label><input name="author" placeholder="Auteur ou organisme" value="${esc(b.author==="Auteur non indiqué"?"":b.author)}"><label>Niveau *</label><select name="level" required>${opts(levels,b.level)}</select><label>Matière *</label><select name="subject">${opts(subjects,b.subject)}</select><label>Description</label><textarea name="description" rows="2">${esc(b.description)}</textarea><label>Contenu / notes de lecture</label><textarea name="content" rows="6" placeholder="Saisis tes notes ou un texte libre que tu as le droit d'utiliser.">${esc((b.content||"").replace(/\\n/g,"\n"))}</textarea><div class="rowbtn"><button type="button" class="secondary" id="cancel">Annuler</button><button>Enregistrer</button></div></form>`);
+$("cancel").onclick=close;$("bookForm").onsubmit=ev=>{ev.preventDefault();const d=Object.fromEntries(new FormData(ev.target));d.author=d.author||"Auteur non indiqué";if(e)Object.assign(b,d);else books.unshift({...d,id:Date.now()});save();close();render()}}
+function account(){let cred=JSON.parse(localStorage.getItem("bm_account")||"null");show(`<h2>Compte et sécurité</h2><p>Identifiant local : <b>${cred?esc(cred.id):"Pas encore créé"}</b></p><p>Mot de passe : <b>${cred?"Enregistré (masqué)":"Pas encore créé"}</b></p><p style="font-size:13px;color:#617486">Cette protection est locale à ce navigateur. Elle ne constitue pas une authentification sécurisée en ligne et ne protège pas les données si quelqu'un peut accéder au stockage du téléphone.</p><div class="rowbtn"><button class="secondary" id="close">Fermer</button><button class="gold" id="generate">${cred?"Réinitialiser les identifiants":"Générer ID et mot de passe"}</button></div>`);
+document.getElementById("close").onclick=close;document.getElementById("generate").onclick=()=>{let id="BM-"+Math.random().toString(36).slice(2,8).toUpperCase(),pw=Array.from(crypto.getRandomValues(new Uint8Array(12)),x=>"ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#".charAt(x%63)).join("");localStorage.setItem("bm_account",JSON.stringify({id,pw}));show(`<h2>Identifiants générés</h2><p>Identifiant : <b>${esc(id)}</b></p><p>Mot de passe : <b>${esc(pw)}</b></p><div class="notice">Copie ces identifiants et conserve-les dans un endroit sûr. Ils sont affichés une seule fois ici.</div><div class="rowbtn"><button id="done">J'ai copié</button></div>`);document.getElementById("done").onclick=close}}
+$("securityBtn").onclick=account;$("dictBtn").onclick=()=>dico();$("addBtn").onclick=()=>addBook();
+["search","level","subject","status","sort"].forEach(id=>$(id).addEventListener("input",render));
+$("favFilter").onclick=()=>{onlyFav=!onlyFav;$("favFilter").textContent=onlyFav?"Voir tous les livres":"☆ Voir mes favoris";render()};
+$("randBtn").onclick=()=>books.length?readBook(books[Math.floor(Math.random()*books.length)].id):alert("Le catalogue est vide.");
+$("resetBtn").onclick=()=>{if(confirm("Remplacer le catalogue par la démo ? Tes livres ajoutés seront perdus (exporte d'abord une sauvegarde).")){books=initial.concat(extra);favorites=[];meta={};save();render()}};
+$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify({v:2,books,favorites,meta},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="bibliomonde-sauvegarde.json";a.click();URL.revokeObjectURL(a.href)};
+$("importBtn").onclick=()=>$("fileInput").click();
+$("fileInput").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{let o=JSON.parse(r.result),arr=Array.isArray(o)?o:o.books;if(!Array.isArray(arr)||!arr.every(b=>b.title&&b.level))throw Error();books=arr.map((b,i)=>({id:b.id||Date.now()+i,author:"Auteur non indiqué",subject:"Culture générale",...b}));if(!Array.isArray(o)){favorites=o.favorites||[];meta=o.meta||{}}save();render();alert("Sauvegarde importée.")}catch{alert("Fichier JSON invalide.")}};r.readAsText(f);e.target.value=""};
+function theme(d){document.body.classList.toggle("dark",d);$("themeBtn").textContent=d?"☀️":"🌙";localStorage.setItem("bm_dark",d?"1":"0");document.querySelector('meta[name=theme-color]').content=d?"#0b1622":"#102a43"}
+$("themeBtn").onclick=()=>theme(!document.body.classList.contains("dark"));
+theme(localStorage.getItem("bm_dark")==="1");
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e});
+addEventListener("appinstalled",()=>$("installBtn").classList.add("hidden"));
+if(matchMedia("(display-mode: standalone)").matches||navigator.standalone)$("installBtn").classList.add("hidden");
+$("installBtn").onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null}else show(`<h2>Installer BiblioMonde</h2><p><b>Android (Chrome) :</b> menu ⋮ → « Installer l'application ».</p><p><b>iPhone (Safari) :</b> bouton Partager → « Sur l'écran d'accueil ».</p><p class="mini">L'installation nécessite que l'application soit ouverte depuis une adresse https (hébergement) et non depuis un simple fichier.</p><div class="rowbtn"><button id="close">Compris</button></div>`),$("close")&&($("close").onclick=close)};
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+render();
+</script></body></html>
